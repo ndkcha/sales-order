@@ -1,23 +1,25 @@
 (ns sales
-  (:gen-class))
+  (:gen-class)
+  (:require [clojure.string :as str]))
 
 (def choice)
 (def file)
 (def customers)
-(def noOfCustomers)
 (def customer)
 (def cust_details)
 (def noOfFields)
 (def products)
-(def noOfProducts)
 (def product)
 (def prod_details)
+(def sales)
+(def sale)
+(def noOfSales)
+(def noOfItems)
 
 (defn DisplayCustomerTable []
   (def file (slurp "cust.txt"))
   (def customers (sort (clojure.string/split-lines file)))
-  (def noOfCustomers (alength (to-array customers)))
-  (dotimes [n noOfCustomers]
+  (dotimes [n (alength (to-array customers))]
     (def customer (nth customers n))
     (def cust_details (clojure.string/split customer #"[|]+"))
     (def noOfFields (alength (to-array cust_details)))
@@ -26,15 +28,32 @@
 (defn DisplayProductTable []
   (def file (slurp "prod.txt"))
   (def products (sort (clojure.string/split-lines file)))
-  (def noOfProducts (alength (to-array products)))
-  (dotimes [n noOfProducts]
+  (dotimes [n (alength (to-array products))]
     (def product (nth products n))
     (def prod_details (clojure.string/split product #"[|]+"))
     (def noOfFields (alength (to-array prod_details)))
     (print (nth prod_details 0) ": [" (nth prod_details 1) "," (nth prod_details 2) "]\n")))
 
+(defn SearchFn [i q items]
+  (def noOfItems (alength (to-array items)))
+  (when (< i noOfItems)
+    (if (str/starts-with? (nth items i) q)
+      (nth items i)
+      (recur (inc i) q items))))
+
+
 (defn DisplaySalesTable []
-  (println "Displaying sales table"))
+  (def customers (clojure.string/split-lines (slurp "cust.txt")))
+  (def products (clojure.string/split-lines (slurp "prod.txt")))
+  (def sales (clojure.string/split-lines (slurp "sales.txt")))
+  (dotimes [n (alength (to-array sales))]
+    (def sale (clojure.string/split (nth sales n) #"[|]+"))
+    (def customer (SearchFn 0 (nth sale 1) customers))
+    (def product (SearchFn 0 (nth sale 2) products))
+    (print (nth sale 0) ": [ ")
+    (print (nth (clojure.string/split customer #"[|]+") 1) ", ")
+    (print (nth (clojure.string/split product #"[|]+") 1) ", ")
+    (print (nth sale 3) "]\n")))
 
 (defn TotalSalesCustomer []
   (println "Total sales for the customer"))
@@ -61,4 +80,4 @@
                "5" (TotalCountProduct)
                "6" (ExitApp)))
 
-(DisplayProductTable)
+(DisplaySalesTable)
