@@ -8,10 +8,14 @@
 (def customer)
 (def cust_details)
 (def noOfFields)
+(def products)
+(def noOfProducts)
+(def product)
+(def prod_details)
 
 (defn DisplayCustomerTable []
   (def file (slurp "cust.txt"))
-  (def customers (clojure.string/split-lines file))
+  (def customers (sort (clojure.string/split-lines file)))
   (def noOfCustomers (alength (to-array customers)))
   (dotimes [n noOfCustomers]
     (def customer (nth customers n))
@@ -20,7 +24,14 @@
     (print (nth cust_details 0) ": [" (nth cust_details 1) "," (nth cust_details 2) "," (nth cust_details 3) "]\n")))
 
 (defn DisplayProductTable []
-  (println "Displaying product table"))
+  (def file (slurp "prod.txt"))
+  (def products (sort (clojure.string/split-lines file)))
+  (def noOfProducts (alength (to-array products)))
+  (dotimes [n noOfProducts]
+    (def product (nth products n))
+    (def prod_details (clojure.string/split product #"[|]+"))
+    (def noOfFields (alength (to-array prod_details)))
+    (print (nth prod_details 0) ": [" (nth prod_details 1) "," (nth prod_details 2) "]\n")))
 
 (defn DisplaySalesTable []
   (println "Displaying sales table"))
@@ -50,4 +61,4 @@
                "5" (TotalCountProduct)
                "6" (ExitApp)))
 
-(DisplayCustomerTable)
+(DisplayProductTable)
