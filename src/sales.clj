@@ -29,7 +29,7 @@
   (def noOfItems (alength (to-array items)))
   (def query (str/lower-case q))
   (when (< i noOfItems)
-    (if (str/starts-with? (str/lower-case (nth (clojure.string/split (nth items i) #"[|]+") 1)) query)
+    (if (= (str/lower-case (nth (clojure.string/split (nth items i) #"[|]+") 1)) query)
       (nth items i)
       (recur (inc i) q items))))
 
@@ -59,22 +59,17 @@
         (recur (inc i) (+ c (toNum (nth sale 3))) productId sales)
         (recur (inc i) c productId sales)))))
 
-(defn DisplayCustomerTable []
-  (def customers (sort (clojure.string/split-lines (slurp "cust.txt"))))
+(defn DisplayCustomerTable [customers]
   (dotimes [n (alength (to-array customers))]
     (def customer (clojure.string/split (nth customers n) #"[|]+"))
     (print (nth customer 0) ": [" (nth customer 1) "," (nth customer 2) "," (nth customer 3) "]\n")))
 
-(defn DisplayProductTable []
-  (def products (sort (clojure.string/split-lines (slurp "prod.txt"))))
+(defn DisplayProductTable [products]
   (dotimes [n (alength (to-array products))]
     (def product (clojure.string/split (nth products n) #"[|]+"))
     (print (nth product 0) ": [" (nth product 1) "," (nth product 2) "]\n")))
 
-(defn DisplaySalesTable []
-  (def customers (clojure.string/split-lines (slurp "cust.txt")))
-  (def products (clojure.string/split-lines (slurp "prod.txt")))
-  (def sales (clojure.string/split-lines (slurp "sales.txt")))
+(defn DisplaySalesTable [customers products sales]
   (dotimes [n (alength (to-array sales))]
     (def sale (clojure.string/split (nth sales n) #"[|]+"))
     (def customer (SearchFn 0 (nth sale 1) customers))
@@ -84,10 +79,7 @@
     (print (nth (clojure.string/split product #"[|]+") 1) ", ")
     (print (nth sale 3) "]\n")))
 
-(defn TotalSalesCustomer []
-  (def customers (clojure.string/split-lines (slurp "cust.txt")))
-  (def products (clojure.string/split-lines (slurp "prod.txt")))
-  (def sales (clojure.string/split-lines (slurp "sales.txt")))
+(defn TotalSalesCustomer [customers products sales]
   (println "Enter the name: ")
   (def customerName (read-line))
   (def customer (SearchByNameFn 0 customerName customers))
@@ -95,9 +87,7 @@
     (println (nth (clojure.string/split customer #"[|]+") 1) ":" (CountSalesFn 0 0.0 (nth customer 0) sales products))
     (println "Customer not found!")))
 
-(defn TotalCountProduct []
-  (def products (clojure.string/split-lines (slurp "prod.txt")))
-  (def sales (clojure.string/split-lines (slurp "sales.txt")))
+(defn TotalCountProduct [products sales]
   (println "Enter the name: ")
   (def productName (read-line))
   (def product (SearchByNameFn 0 productName products))
@@ -109,6 +99,9 @@
   (println "Good bye!"))
 
 (defn DisplayMenu []
+  (def customers (clojure.string/split-lines (slurp "cust.txt")))
+  (def products (clojure.string/split-lines (slurp "prod.txt")))
+  (def sales (clojure.string/split-lines (slurp "sales.txt")))
   (println "1. Display Customer Table")
   (println "2. Display Product Table")
   (println "3. Display Sales Table")
@@ -117,11 +110,11 @@
   (println "6. Exit")
   (println "Enter your choice: ")
   (def choice (read-line))
-  (case choice "1" (DisplayCustomerTable)
-               "2" (DisplayProductTable)
-               "3" (DisplaySalesTable)
-               "4" (TotalSalesCustomer)
-               "5" (TotalCountProduct)
+  (case choice "1" (DisplayCustomerTable customers)
+               "2" (DisplayProductTable products)
+               "3" (DisplaySalesTable customers products sales)
+               "4" (TotalSalesCustomer customers products sales)
+               "5" (TotalCountProduct products sales)
                "6" (ExitApp))
   (if (not= choice "6")
     (recur)))
