@@ -3,14 +3,10 @@
   (:require [clojure.string :as str]))
 
 (def choice)
-(def file)
 (def customers)
 (def customer)
-(def cust_details)
-(def noOfFields)
 (def products)
 (def product)
-(def prod_details)
 (def sales)
 (def sale)
 (def noOfItems)
@@ -64,22 +60,16 @@
         (recur (inc i) c productId sales)))))
 
 (defn DisplayCustomerTable []
-  (def file (slurp "cust.txt"))
-  (def customers (sort (clojure.string/split-lines file)))
+  (def customers (sort (clojure.string/split-lines (slurp "cust.txt"))))
   (dotimes [n (alength (to-array customers))]
-    (def customer (nth customers n))
-    (def cust_details (clojure.string/split customer #"[|]+"))
-    (def noOfFields (alength (to-array cust_details)))
-    (print (nth cust_details 0) ": [" (nth cust_details 1) "," (nth cust_details 2) "," (nth cust_details 3) "]\n")))
+    (def customer (clojure.string/split (nth customers n) #"[|]+"))
+    (print (nth customer 0) ": [" (nth customer 1) "," (nth customer 2) "," (nth customer 3) "]\n")))
 
 (defn DisplayProductTable []
-  (def file (slurp "prod.txt"))
-  (def products (sort (clojure.string/split-lines file)))
+  (def products (sort (clojure.string/split-lines (slurp "prod.txt"))))
   (dotimes [n (alength (to-array products))]
-    (def product (nth products n))
-    (def prod_details (clojure.string/split product #"[|]+"))
-    (def noOfFields (alength (to-array prod_details)))
-    (print (nth prod_details 0) ": [" (nth prod_details 1) "," (nth prod_details 2) "]\n")))
+    (def product (clojure.string/split (nth products n) #"[|]+"))
+    (print (nth product 0) ": [" (nth product 1) "," (nth product 2) "]\n")))
 
 (defn DisplaySalesTable []
   (def customers (clojure.string/split-lines (slurp "cust.txt")))
