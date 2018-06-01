@@ -99,9 +99,9 @@
   (println "Good bye!"))
 
 (defn DisplayMenu []
-  (def customers (clojure.string/split-lines (slurp "cust.txt")))
-  (def products (clojure.string/split-lines (slurp "prod.txt")))
-  (def sales (clojure.string/split-lines (slurp "sales.txt")))
+  (def customers (sort (clojure.string/split-lines (slurp "cust.txt"))))
+  (def products (sort (clojure.string/split-lines (slurp "prod.txt"))))
+  (def sales (sort (clojure.string/split-lines (slurp "sales.txt"))))
   (println "1. Display Customer Table")
   (println "2. Display Product Table")
   (println "3. Display Sales Table")
